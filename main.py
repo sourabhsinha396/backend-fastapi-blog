@@ -2,9 +2,12 @@ from fastapi import FastAPI
 from typing import Dict
 from sqlalchemy import text
 from core.config import settings
-from database.db import get_db
+from apis.deps import get_db
+from apis.main import api_router
+
 
 app: FastAPI = FastAPI(title=settings.TITLE, description=settings.DESCRIPTION, version=settings.VERSION)
+app.include_router(api_router)
 
 
 @app.get("/")
