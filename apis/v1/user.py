@@ -1,9 +1,8 @@
 from sqlmodel import Session
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, status
 from apis.deps import get_db
 from database.crud.user import insert_user
-from schemas.user import UserCreate
-from schemas.user import ShowUser
+from schemas.user import UserCreate, ShowUser
 
 router = APIRouter()
 
