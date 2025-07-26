@@ -12,8 +12,8 @@ router = APIRouter()
 
 
 @router.post("/blogs", response_model=ShowBlog, status_code=status.HTTP_201_CREATED)
-def create_blog(blog: CreateBlog, db: Session = Depends(get_db)):
-    return insert_blog(blog, db)
+def create_blog(blog: CreateBlog, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    return insert_blog(blog, current_user, db)
 
 
 @router.get("/blogs/{slug}", response_model=ShowBlog)
@@ -25,20 +25,20 @@ def get_blog(slug: str, db: Session = Depends(get_db)):
 
 
 @router.get("/blogs", response_model=List[ShowBlog])
-def get_blogs(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+def get_blogs(db: Session = Depends(get_db)):
     return get_all_blogs(db)
 
 
 @router.put("/blogs/{slug}", response_model=ShowBlog)
-def update_blog(slug: str, blog: CreateBlog, db: Session = Depends(get_db)):
-    blog = update_blog_by_slug(slug, blog, db)
+def update_blog(slug: str, blog: CreateBlog, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    blog = update_blog_by_slug(slug, blog, current_user, db)
     if not blog:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Blog not found")
     return blog
 
 
 @router.delete("/blogs/{slug}", status_code=status.HTTP_200_OK)
-def delete_blog(slug: str, db: Session = Depends(get_db)):
-    if delete_blog_by_slug(slug, db):
+def delete_blog(slug: str, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    if delete_blog_by_slug(slug, current_user, db):
         return {"detail": "Blog deleted successfully"}
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Blog not found")
