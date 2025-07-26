@@ -2,9 +2,10 @@ from typing import List
 from sqlmodel import Session
 from fastapi import APIRouter, Depends, status, HTTPException
 
-from apis.deps import get_db
+from apis.deps import get_db, get_current_user
 from database.crud.blog import insert_blog, get_blog_by_slug, get_all_blogs, update_blog_by_slug, delete_blog_by_slug
 from schemas.blog import CreateBlog, ShowBlog
+from database.models.user import User
 
 
 router = APIRouter()
@@ -24,7 +25,7 @@ def get_blog(slug: str, db: Session = Depends(get_db)):
 
 
 @router.get("/blogs", response_model=List[ShowBlog])
-def get_blogs(db: Session = Depends(get_db)):
+def get_blogs(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     return get_all_blogs(db)
 
 

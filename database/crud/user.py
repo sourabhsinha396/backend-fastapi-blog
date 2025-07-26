@@ -1,4 +1,4 @@
-from sqlmodel import Session
+from sqlmodel import Session, select
 from fastapi import Depends
 from database.models.user import User
 
@@ -17,3 +17,9 @@ def insert_user(user: UserCreate, db: Session = Depends(get_db)) -> User:
     db.commit()
     db.refresh(db_user)
     return db_user
+
+
+def get_user_by_email(email: str, db: Session = Depends(get_db)) -> User:
+    statement = select(User).where(User.email == email)
+    result = db.exec(statement)
+    return result.first()
