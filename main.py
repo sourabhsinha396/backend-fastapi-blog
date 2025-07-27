@@ -4,11 +4,12 @@ from sqlalchemy import text
 from core.config import settings
 from apis.deps import get_db
 from apis.main import api_router
+from apps.main import app_router
 
 
 app: FastAPI = FastAPI(title=settings.TITLE, description=settings.DESCRIPTION, version=settings.VERSION)
 app.include_router(api_router)
-
+app.include_router(app_router)
 
 @app.get("/")
 def read_root() -> Dict[str, str]:
